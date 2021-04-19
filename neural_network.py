@@ -1,24 +1,26 @@
 import numpy as np
 class Network():
  def __init__(self):
-     self.in_ = []
-     self.out = []
+     self.w = []
+     self.b = []
      self.out_n = []
+     self.in_n = []
 
-     
-     self.t = [x for xs in self.in_ for x in xs]
+
+     self.t = [x for xs in self.in_n for x in xs]
 
  def input(self,input_layer,size):
      self.h1_size = size
      self.input_layer = input_layer
      return self.input_layer
- def add_params(self,out_n,w,b):
-     self.in_.append(w)
-     self.out.append(b)
-
+ def add_params(self,in_n,out_n,w,b):
+     self.w.append(w)
+     self.b.append(b)
+     self.in_n.append(in_n)
      self.out_n.append(out_n)
+     if len(self.out_n) >29:
+      print(self.out_n[5],self.w[5])
 
-     print(self.t)
  def fn(self,layer,h_size):
      self.input = layer
      self.h1_size = h_size
@@ -30,7 +32,7 @@ class Network():
          dot = np.dot(np.squeeze(self.input),np.squeeze(self.weights))
          sum = dot+self.biases
          neuron.append(self.activation(sum))
-         self.add_params(self.activation(sum),self.weights,self.biases)
+         self.add_params(sum,self.activation(sum),self.weights,self.biases)
 
      return neuron
 
