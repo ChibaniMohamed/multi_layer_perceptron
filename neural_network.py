@@ -5,8 +5,8 @@ class Network():
      self.out = []
      self.out_n = []
 
-
-
+     
+     self.t = [x for xs in self.in_ for x in xs]
 
  def input(self,input_layer,size):
      self.h1_size = size
@@ -17,7 +17,8 @@ class Network():
      self.out.append(b)
 
      self.out_n.append(out_n)
-     print([x for xs in self.in_ for x in xs])
+
+     print(self.t)
  def fn(self,layer,h_size):
      self.input = layer
      self.h1_size = h_size
