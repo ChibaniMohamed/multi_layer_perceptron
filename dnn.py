@@ -4,16 +4,21 @@ class Fc():
          self.layer = layer
          self.weights = np.asarray(np.random.randn(self.layer))
          self.biases = np.asarray(np.random.randn(1))
-
+         self.neurons_outputs = np.zeros(self.layer)
     def forward(self,input):
         self.input = input
         out = []
-
         dot = np.dot(np.squeeze(self.layer),np.squeeze(self.weights))
         sum = dot+self.biases
+        self.neurons_outputs += sum
         out.append(self.activation(sum))
         return out
+    def backward(self,y_pred,y):
+       cost_func = np.dot((y_pred-y)*self.sigmoid_derivative(y_pred),self.neurons_outputs)
+       self.weights = self.weights - cost_func
 
+    def sigmoid_derivative(self,sig):
+        return sig*(1-sig)
     def activation(self,value):
         return self.sigmoid(value)
 
@@ -40,9 +45,10 @@ class Network():
         for i in range(len(y)):
             for j in range(len(y_pred)):
              total_error.append(0.5*(y[i] - y_pred[j])*(y[i] - y_pred[j]))
-
+        for layer in self.layers:
+            layer.backward(y_pred,y)
         return total_error,y_pred
-    def backward(self):
+
 
 
 
