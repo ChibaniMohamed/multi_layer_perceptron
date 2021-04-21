@@ -15,7 +15,8 @@ class Fc():
         return out
     def backward(self,y_pred,y):
        cost_func = np.dot((y_pred-y)*self.sigmoid_derivative(y_pred),self.neurons_outputs)
-       self.weights = self.weights - cost_func
+       for w in range(len(self.weights)):
+        self.weights[w] = self.weights[w] - cost_func
 
     def sigmoid_derivative(self,sig):
         return sig*(1-sig)
@@ -39,15 +40,21 @@ class Network():
             output.append(layer.forward(self.input_[i]))
 
         return output[len(output)-1]
-    def fit(self,x,y):
-        y_pred = self.prediction(x)
-        total_error = []
-        for i in range(len(y)):
-            for j in range(len(y_pred)):
-             total_error.append(0.5*(y[i] - y_pred[j])*(y[i] - y_pred[j]))
-        for layer in self.layers:
-            layer.backward(y_pred,y)
-        return total_error,y_pred
+    def fit(self,x,y,epoch):
+
+        error = []
+        for ep in range(epoch):
+         for i in range(len(y)):
+            for j in range(1):
+             y_pred = self.prediction(x)
+             error.append(0.5*(y[i] - y_pred[j])*(y[i] - y_pred[j]))
+
+             for layer in self.layers:
+               layer.backward(y_pred[0][0],y[i])
+
+
+        return y_pred,error
+
 
 
 
@@ -64,8 +71,14 @@ y_train = [0,0,0,0,0,1,1,1,1,1]
 model = Network()
 model.add(Fc(len(x_train)))
 model.add(Fc(20))
-model.add(Fc(3))
-error,pred = model.fit(x_train,y_train)
+model.add(Fc(10))
+model.add(Fc(1))
+model.fit(x_train,y_train,epoch=100)
+predict = model.prediction([-2.458797978])
+print("test : ",predict)
+'''
 print(f"err : {error}")
 print(f"pred : {pred}")
+
 #pred = model.prediction(x_train)
+'''
