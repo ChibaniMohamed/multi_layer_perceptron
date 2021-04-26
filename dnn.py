@@ -8,15 +8,14 @@ class Fc():
     def forward(self,input):
         self.input = input
         out = []
-        dot = np.dot(np.squeeze(self.layer),np.squeeze(self.weights))
+        dot = np.dot(np.squeeze(self.input),np.squeeze(self.weights))
         sum = dot+self.biases
         self.neurons_outputs += sum
         out.append(self.activation(sum))
         return out
     def backward(self,y_pred,y):
        cost_func = np.dot((y_pred-y)*self.sigmoid_derivative(y_pred),self.neurons_outputs)
-       for w in range(len(self.weights)):
-        self.weights[w] = self.weights[w] - cost_func
+       self.weights -= 0.5*cost_func
 
     def sigmoid_derivative(self,sig):
         return sig*(1-sig)
@@ -53,7 +52,7 @@ class Network():
                layer.backward(y_pred[0][0],y[i])
 
 
-        return y_pred,error
+         print(error)
 
 
 
@@ -69,13 +68,13 @@ x_train = [2.7810836,2.550537003,1.465489372,2.362125076,3.396561688
 6.922596716,1.77106367,8.675418651,-0.242068655,7.673756466,3.508563011]
 y_train = [0,0,0,0,0,1,1,1,1,1]
 model = Network()
-model.add(Fc(len(x_train)))
+model.add(Fc(1))
 model.add(Fc(20))
 model.add(Fc(10))
-model.add(Fc(1))
-model.fit(x_train,y_train,epoch=100)
-predict = model.prediction([-2.458797978])
-print("test : ",predict)
+model.add(Fc(2))
+model.fit(x_train,y_train,epoch=10)
+predict = model.prediction([7.673756466])
+print("test : ",np.argmax(predict))
 '''
 print(f"err : {error}")
 print(f"pred : {pred}")
