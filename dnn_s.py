@@ -7,6 +7,12 @@ class Network():
         self.input = x
         self.output = y
         '''
+
+
+
+
+
+
         self.w1_l1 = np.random.randn(10,784)
 
         self.w2_l2 = np.random.randn(10,10)
@@ -77,9 +83,7 @@ class Network():
 
 #computing every error and every forward with every input matrix
 #input should be 1x28*28 not 28x28 dimension
+#mmmmm i think the issue is in error and prediction
 x_train = x_train.reshape(-1, 28*28)
 model = Network()
 model.fit(x_train[:100],y_train[:100])
-
-#computing every error and every forward with every input matrix
-#input should be 1x28*28 not 28x28 dimension
