@@ -1,18 +1,13 @@
 import numpy as np
 class Network():
     def __init__(self):
+
         '''
         self.x_shape = x_shape
         self.y_shape = y_shape
         self.input = x
         self.output = y
         '''
-
-
-
-
-
-
         self.w1_l1 = np.random.randn(10,784)
 
         self.w2_l2 = np.random.randn(10,10)
@@ -26,7 +21,7 @@ class Network():
 
     def forward(self,x_train):
            # print(len(x_train),len(self.w1_l1))
-            dot_product_l1 = self.w1_l1.dot(x_train)
+            dot_product_l1 = np.dot(self.w1_l1,x_train)
 
             self.neurons_inputs_l1 = sum(dot_product_l1) + self.biases_l1
             self.neurons_outputs_l1 = self.activation(self.neurons_inputs_l1)
@@ -45,27 +40,29 @@ class Network():
 
     def predict(self,input):
         prediction = self.forward(input)
-        print(prediction)
-        print(np.argmax(prediction,0))
+
         return prediction
 
     def compute_error(self,y_pred,y_true):
         # print(np.argmax(y_pred))
          #print('pred : ',y_pred[0])
-         #print('true : ',y_true)
-         error = y_pred - y_true
-         #print(error)
+        # print('true : ',y_pred.size)
+         error = self.one_hot(np.argmax(y_pred)) - self.one_hot(y_true)
+
          return error,y_pred
 
     def backward(self,error,y_pred):
 
        cost_func_1 = np.dot(self.neurons_outputs_l1.T,error*self.sigmoid_derivative(y_pred))
        cost_func_2 = np.dot((error)*self.sigmoid_derivative(y_pred),self.neurons_outputs_l2.T)
-       self.w1_l1 = self.w1_l1-0.5*cost_func_1
-       self.w2_l2 = self.w2_l2-0.5*cost_func_2
-    def one_hot(self,Y):
-     one_hot_Y = np.zeros((Y.size, Y.max() + 1))
-     one_hot_Y[np.arange(Y.size), Y] = 1
+       self.w1_l1 -=1.5*cost_func_1
+       #print(self.w1_l1[0][0])
+       self.w2_l2 -=1.5*cost_func_2
+    def one_hot(self,y):
+     #print("size : ",y.max())
+     one_hot_Y = np.zeros((y.size, 9 + 1))
+
+     one_hot_Y[np.arange(y.size), y] = 1
      one_hot_Y = one_hot_Y.T
      return one_hot_Y
 
@@ -78,6 +75,10 @@ class Network():
          error,y_pred = self.compute_error(pred,output)
 
          self.backward(error,y_pred)
+         print(pred,output)
+
+#computing every error and every forward with every input matrix
+#input should be 1x28*28 not 28x28 dimension
 
 
 
