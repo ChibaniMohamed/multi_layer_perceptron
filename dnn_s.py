@@ -95,21 +95,6 @@ class Network():
          w1_l1,w2_l2 = w1_l,w2_l
 
 
-#computing every error and every forward with every input matrix
-#input should be 1x28*28 not 28x28 dimension
-
-
-#computing every error and every forward with every input matrix
-#input should be 1x28*28 not 28x28 dimension
-
-#computing every error and every forward with every input matrix
-#input should be 1x28*28 not 28x28 dimension
-
-
-
-#computing every error and every forward with every input matrix
-#input should be 1x28*28 not 28x28 dimension
-#mmmmm i think the issue is in error and prediction
 x_train = x_train.reshape(-1, 28*28)
 model = Network()
 model.fit(x_train[:100],y_train[:100])
