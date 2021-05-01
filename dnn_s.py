@@ -26,12 +26,12 @@ class Network():
             dot_product_l1 = np.dot(w1_l1,x.T)
 
             n_in1 = sum(dot_product_l1) + b1
-            n_out1 = self.activation(n_in1)
+            n_out1 = self.ReLU(n_in1)
 
 
             dot_product_l2 = np.dot(w2_l2,n_out1)
             n_in2 = sum(dot_product_l2) + b2
-            n_out2 = self.activation(n_in2)
+            n_out2 = self.softmax(n_in2)
             return n_in1,n_out1,n_in2,n_out2
 
     def activation(self,x):
@@ -40,6 +40,14 @@ class Network():
         return 1/(1+np.exp(-x_))
     def sigmoid_derivative(self,sig):
         return sig*(1-sig)
+    def ReLU(self,Z):
+      return np.maximum(Z, 0)
+
+    def softmax(self,Z):
+      return np.exp(Z) / sum(np.exp(Z))
+
+    def relu_deriv(self,z):
+      return z > 0
 
     def predict(self,input,w1_l1,w2_l2,b1,b2):
         n_in1,n_out1,n_in2,n_out2 = self.forward(input,w1_l1,w2_l2,b1,b2)
@@ -54,10 +62,13 @@ class Network():
          print("err : ",error.shape)
          return error,y_pred
 
-    def backward(self,error,y_pred,w1_l1,w2_l2,n_out1,n_out2):
-       cost_func_1 = np.dot(error,n_out1.T)*self.sigmoid_derivative(y_pred)
-       cost_func_2 = np.dot(error,n_out2.T)*self.sigmoid_derivative(y_pred)
-       print(error.shape)
+    def backward(self,X,error,y_pred,w1_l1,w2_l2,n_in1,n_out1,n_out2):
+
+       cost_func_1 = np.dot(error,n_out1.T)*self.relu_deriv(y_pred)
+       print(cost_func_1.shape)
+       cost_func_2 = np.dot(error,n_out2.T)*self.relu_deriv(y_pred)
+
+       #print(error.shape)
        w1_l1 -=0.5*cost_func_1
        #print(self.w1_l1[0][0])
        w2_l2 -=0.5*cost_func_2
@@ -66,7 +77,7 @@ class Network():
     def one_hot(self,y):
      #print("size : ",y.max())
      one_hot_Y = np.zeros((y.size, y.max() + 1))
-     
+
      one_hot_Y[np.arange(y.size), y] = 1
      one_hot_Y = one_hot_Y.T
      return one_hot_Y
@@ -79,9 +90,13 @@ class Network():
          #all in one dimension
          n_in1,n_out1,n_in2,n_out2 = self.predict(x_train,w1_l1,w2_l2,b1,b2)
          error,y_pred = self.compute_error(n_out2,y_train)
-         for err in error:
-          w1_l,w2_l = self.backward(err,y_pred,w1_l1,w2_l2,n_out1,n_out2)
-          w1_l1,w2_l2 = w1_l,w2_l
+
+         w1_l,w2_l = self.backward(x_train,error,y_pred,w1_l1,w2_l2,n_in1,n_out1,n_out2)
+         w1_l1,w2_l2 = w1_l,w2_l
+
+
+#computing every error and every forward with every input matrix
+#input should be 1x28*28 not 28x28 dimension
 
 
 #computing every error and every forward with every input matrix
