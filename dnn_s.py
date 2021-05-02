@@ -113,6 +113,8 @@ class Network():
 
 #computing every error and every forward with every input matrix
 #input should be 1x28*28 not 28x28 dimension
+#computing every error and every forward with every input matrix
+#input should be 1x28*28 not 28x28 dimension
 x_train = x_train.reshape(-1, 28*28)
 model = Network()
 model.fit(x_train[:100],y_train[:100])
