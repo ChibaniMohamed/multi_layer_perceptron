@@ -2,9 +2,18 @@ import numpy as np
 class Network():
     def init_params(self):
 
-        self.w1_l1 = np.random.randn(10,784) * np.sqrt(1. / 10)
+        '''
+        self.x_shape = x_shape
+        self.y_shape = y_shape
+        self.input = x
+        self.output = y
+        '''
+        np.random.seed(10)
+        self.w1_l1 = np.random.randn(10,784)
 
-        self.w2_l2 = np.random.randn(10,1) * np.sqrt(1. / 1)
+        self.w2_l2 = np.random.randn(1,10)
+        print(self.w2_l2)
+
 
         self.biases_l1 = np.random.randn(10,1)
         self.biases_l2 = np.random.randn(10,1)
@@ -19,20 +28,16 @@ class Network():
     def forward(self,x,w1_l1,w2_l2,b1,b2):
            # print(len(x_train),len(self.w1_l1))
 
-            dot_product_l1 = np.dot(w1_l1,x)
-
+            dot_product_l1 = np.dot(x,w1_l1.T)
             n_in1 = dot_product_l1+ b1
-            n_in1 = n_in1.reshape(-1,10)[0]
             n_out1 = self.sigmoid(n_in1)
 
-
-
-            dot_product_l2 = np.dot(n_out1,w2_l2)
+            dot_product_l2 = np.dot(n_out1,w2_l2.T)
             n_in2 = dot_product_l2 + b2
-            n_in2 = n_in2.reshape(-1,10)[0]
-            n_out2 = self.softmax(n_in2)
-            n_out2 = n_out2.reshape(-1,10)[0]
+            n_out2 = self.ReLU(n_in2)
+
             print(n_in1.shape,n_in2.shape,n_out2.shape)
+
             return n_in1,n_out1,n_in2,n_out2
 
     def activation(self,x):
@@ -69,21 +74,24 @@ class Network():
     '''
 
     def backward(self,X,Y,w1_l1,w2_l2,n_in1,n_out1,n_in2,n_out2):
-       print(n_out2-Y)
-       error = 2*(n_out2-Y)*self.sigmoid_derivative(n_in2)*n_out2.shape
-       w2 = np.outer(error, n_out1)
-       error = np.dot(w2_l2.T, error) * self.relu_deriv(n_in2)
-       print('err : ',w2_l2.T.shape ,error.shape,self.relu_deriv(n_in2).shape)
-       w1 = np.outer(error, X)
+       #w2
 
-       print('w2 : ',w2.shape)
-       print('pre w2 : ',w2_l2.shape)
+       error_2 = n_out2 - Y
+       d_out_2 = self.relu_deriv(n_out2)
+       cost_2 = np.dot(n_in1,error_2*d_out_2)
+       w2_l2 -= 0.5*cost_2.T
 
-       #print(error.shape)
-       w2 = w2.reshape(-1,10)[0]
-       w1_l1 -=0.5*w1
-       #print(self.w1_l1[0][0])
-       w2_l2 -=0.5*w2.T
+       #w1
+       error_1 = n_out1 - Y
+       d_out_1 = self.sigmoid_derivative(n_out1)
+       d = error_1*d_out_1
+       cost_1 = np.dot(d.reshape(1,100).T,X.reshape(1,784))
+       w1_l1 -= 0.5*cost_1
+
+       print(cost_2)
+
+
+
        return w1_l1,w2_l2
 
     def one_hot(self,y):
@@ -107,6 +115,8 @@ class Network():
          w1_l1,w2_l2 = w1_l,w2_l
 
 
+#computing every error and every forward with every input matrix
+#input should be 1x28*28 not 28x28 dimension
 x_train = x_train.reshape(-1, 28*28)
 model = Network()
 model.fit(x_train[:100],y_train[:100])
