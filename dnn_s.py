@@ -9,14 +9,12 @@ class Network():
         self.output = y
         '''
         np.random.seed(10)
-        self.w1_l1 = np.random.randn(10,784)
-
+        self.w1_l1 = np.random.randn(10,3)
         self.w2_l2 = np.random.randn(1,10)
-        print(self.w2_l2)
 
 
-        self.biases_l1 = np.random.randn(10,1)
-        self.biases_l2 = np.random.randn(10,1)
+        self.biases_l1 = np.random.randn(1,10)
+        self.biases_l2 = np.random.randn(1)
         '''
         self.neurons_inputs_l1 = np.zeros(10)
         self.neurons_outputs_l1 = np.zeros(10)
@@ -29,14 +27,12 @@ class Network():
            # print(len(x_train),len(self.w1_l1))
 
             dot_product_l1 = np.dot(x,w1_l1.T)
-            n_in1 = dot_product_l1+ b1
+            n_in1 = dot_product_l1
             n_out1 = self.sigmoid(n_in1)
 
             dot_product_l2 = np.dot(n_out1,w2_l2.T)
             n_in2 = dot_product_l2 + b2
-            n_out2 = self.ReLU(n_in2)
-
-            print(n_in1.shape,n_in2.shape,n_out2.shape)
+            n_out2 = self.sigmoid(n_in2)
 
             return n_in1,n_out1,n_in2,n_out2
 
@@ -77,18 +73,17 @@ class Network():
        #w2
 
        error_2 = n_out2 - Y
-       d_out_2 = self.relu_deriv(n_out2)
-       cost_2 = np.dot(n_in1,error_2*d_out_2)
+       d_out_2 = self.sigmoid(n_out2)
+       cost_2 = np.dot(n_in1.reshape(10,1),(error_2*d_out_2))
        w2_l2 -= 0.5*cost_2.T
 
        #w1
-       error_1 = n_out1 - Y
+       #error_1 = n_out1 - Y
        d_out_1 = self.sigmoid_derivative(n_out1)
-       d = error_1*d_out_1
-       cost_1 = np.dot(d.reshape(1,100).T,X.reshape(1,784))
-       w1_l1 -= 0.5*cost_1
+       d = d_out_1
+       cost_1 = np.dot(X.reshape(3,1),d.reshape(1,10))
+       w1_l1 -= 0.5*cost_1.T
 
-       print(cost_2)
 
 
 
@@ -104,8 +99,10 @@ class Network():
 
     def fit(self,x_train,y_train):
       w1_l1,w2_l2,b1,b2 = self.init_params()
-      for i in range(10):
+
+      for i in range(100000):
         for input,output in zip(x_train,y_train):
+
          #print(input)
          #all in one dimension
          n_in1,n_out1,n_in2,n_out2 = self.predict(input,w1_l1,w2_l2,b1,b2)
@@ -114,9 +111,8 @@ class Network():
          w1_l,w2_l = self.backward(input,output,w1_l1,w2_l2,n_in1,n_out1,n_in2,n_out2)
          w1_l1,w2_l2 = w1_l,w2_l
 
+      return w1_l1,w2_l2,b1,b2
+
 
 #computing every error and every forward with every input matrix
 #input should be 1x28*28 not 28x28 dimension
-x_train = x_train.reshape(-1, 28*28)
-model = Network()
-model.fit(x_train[:100],y_train[:100])
