@@ -4,11 +4,7 @@ class Perceptron():
      self.input_ = []
      if self.input_:
          print(self.input_)
-         '''
-         self.w = []
-         self.b = []
-         self.input = []
-         '''
+       
          self.weights = np.asarray(np.random.randn(len(self.input)))
          self.biases = np.asarray(np.random.randn(1))
          #self.input = 0
