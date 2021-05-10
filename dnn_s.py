@@ -40,7 +40,7 @@ class Network():
         return self.w1_l1,self.w2_l2,self.biases_l1,self.biases_l2
 
     def forward(self,x,w1_l1,w2_l2,b1,b2):
-           # print(len(x_train),len(self.w1_l1))
+           
 
             dot_product_l1 = np.dot(x,w1_l1.T)
             n_in1 = dot_product_l1
