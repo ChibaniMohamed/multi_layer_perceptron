@@ -98,11 +98,11 @@ class Network():
 
         for input,output in zip(x_train,y_train):
 
-         #print(input)
+         
          #all in one dimension
 
          n_in1,n_out1,n_in2,n_out2 = self.predict(input,w1_l1,w2_l2,b1,b2)
-         #error,y_pred = self.compute_error(n_out2,y_train)
+        
 
          w1_l,w2_l = self.backward(input,output,w1_l1,w2_l2,n_in1,n_out1,n_in2,n_out2)
          w1_l1,w2_l2 = w1_l,w2_l
