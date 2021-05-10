@@ -7,16 +7,7 @@ class Perceptron():
        
          self.weights = np.asarray(np.random.randn(len(self.input)))
          self.biases = np.asarray(np.random.randn(1))
-         #self.input = 0
-        # self.w = np.asarray(np.random.randn(len(self.input)))
-         '''
-         self.out_n = []
-         self.in_n = []
-         self.s = 0
-         '''
-
-     #self.t = [x for xs in self.in_n for x in xs]
-
+        
  def input(self,input_layer,size):
      self.h1_size = size
      self.input_layer = input_layer
